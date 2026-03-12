@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 LARS_PLOTS_DIR="$HOME/SlowControl/plots"
 
@@ -10,6 +11,6 @@ SLEEP_SECS=120
 
 while [ 1 ]
 do
-	rsync -avP "$LARS_PLOTS_DIR/*.png" "$REMOTE_USER@$REMOTE_SERVER:$REMOTE_PLOTS_DIR"
+	rsync -avP "$LARS_PLOTS_DIR/"*.png "$REMOTE_USER@$REMOTE_SERVER:$REMOTE_PLOTS_DIR"
 	sleep $SLEEP_SECS
 done

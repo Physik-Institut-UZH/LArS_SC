@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 PYTHON_EXEC="$HOME/miniconda3/envs/lars/bin/python"
 
