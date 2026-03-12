@@ -3,6 +3,9 @@ set -euo pipefail
 
 PYTHON_EXEC="$HOME/miniconda3/envs/lars/bin/python"
 
+PROJECT_ROOT="$HOME/SlowControl/LArS_SC"
+export PYTHONPATH="$PROJECT_ROOT:${PYTHONPATH:-}"
+
 LARS_DATA_ING_SCRIPT="$HOME/SlowControl/LArS_SC/DataIngestor.py"
 
 LARS_DATA_ING_CONF="$HOME/SlowControl/config/lars_dataingestor_config.json"
