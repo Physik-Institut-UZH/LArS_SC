@@ -1,5 +1,6 @@
 import sys
 import time
+import signal
 
 from core import (getRegister, load_all_devices, read_token, load_json_config)
 from influxdb_client import InfluxDBClient, Point
@@ -7,6 +8,13 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 
 import traceback
 
+shutdown_request = False
+def handle_sigterm(signum, frame):
+    global shutdown_request
+    print("SIGTERM received: shutting down gracefully...")
+    shutdown_request = True
+#
+signal.signal(signal.SIGTERM, handle_sigterm)
 
 if __name__=="__main__":
 
@@ -41,7 +49,7 @@ if __name__=="__main__":
         with InfluxDBClient(url=INFLUXDB_URL, token=INFLUXDB_TOKEN, org=INFLUXDB_ORG) as influxdb_client:
             write_api = influxdb_client.write_api(write_options=SYNCHRONOUS)
 
-            while True:
+            while not shutdown_request:
                 t0 = time.time()
 
                 points_lst = []
@@ -83,8 +91,16 @@ if __name__=="__main__":
                 time.sleep(max(0, POLL_INTERVAL - dt))
             #
         #
+    except KeyboardInterrupt:
+        print('Exit from the application as per user request: KeyboardInterrupt received.')
+        shutdown_request = True
+    #
     finally:
+        print("Cleaning up resources...")
         for devname, dev in devs_dict.items():
             dev.close()
-    #
+        #
+        print("Shutdown complete.")
+        sys.exit(0)
+    #  
 #

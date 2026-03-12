@@ -8,8 +8,8 @@
 
 import sys
 from os import path
-import json
 import time
+import signal
 
 import matplotlib
 matplotlib.use('Agg')
@@ -21,6 +21,8 @@ from influxdb_client import InfluxDBClient
 import pandas as pd
 
 from core import (read_token, load_json_config)
+
+
 
 def get_last_measurements(client:InfluxDBClient, bucket:str, meas_name:str,*, minutes:int|None=None, hours:int|None=None) -> pd.DataFrame|None:
 
@@ -55,6 +57,13 @@ def get_last_measurements(client:InfluxDBClient, bucket:str, meas_name:str,*, mi
     return df
 #
 
+shutdown_request = False
+def handle_sigterm(signum, frame):
+    global shutdown_request
+    print("SIGTERM received: shutting down gracefully...")
+    shutdown_request = True
+#
+signal.signal(signal.SIGTERM, handle_sigterm)
 
 if __name__ == '__main__':
 
@@ -78,21 +87,24 @@ if __name__ == '__main__':
     plt.ioff()
     
     try:
-        while True:
+        while not shutdown_request:
             with InfluxDBClient(url=INFLUXDB_URL, token=INFLUXDB_TOKEN, org=INFLUXDB_ORG) as client:
                 #Pull the 72 hours data
+                print('Pulling the last 72 hrs data')
                 df_72h = get_last_measurements(client=client, 
                                                bucket=INFLUXDB_BUCKET,
                                                meas_name=MEAS_NAME,
                                                hours=72
                                                )
                 
+                print('Pulling the last 8 hrs data')
                 df_8h = get_last_measurements(client=client,
                                               bucket=INFLUXDB_BUCKET,
                                               meas_name=MEAS_NAME,
                                               hours=8
                                               )
                 
+                print('Pulling the last 8 hrs data')
                 df_4h = get_last_measurements(client=client,
                                               bucket=INFLUXDB_BUCKET,
                                               meas_name=MEAS_NAME,
@@ -101,6 +113,7 @@ if __name__ == '__main__':
             #
             
             
+            print('Building the webpage plots')
             ####################################
             # Pressure - Temperature plots 72h #
             ####################################
@@ -401,8 +414,13 @@ if __name__ == '__main__':
             plt.savefig(path.join(PLOTS_DIR,'LevelMeterLong.png'),format='png')
             plt.close()
 
-            time.sleep(LOOP_SLEEP_SECS)
+            print('All plots built and saved successfully.')
 
-    except KeyboardInterrupt:
-        print('Exit from the application as per user request.')
+            time.sleep(LOOP_SLEEP_SECS)
     #
+    except KeyboardInterrupt:
+        print('Exit from the application as per user request: KeyboardInterrupt received.')
+        shutdown_request = True
+    #
+
+    print('Shutdown complete.')
