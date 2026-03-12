@@ -1,0 +1,17 @@
+[Unit]
+Description=LArs slow control webpage plots
+
+[Service]
+ExecStart=%h/local/bin/lars_plots_sync.sh
+Restart=always
+RestartSec=10
+
+# give Python time to shut down
+TimeoutStopSec=30
+
+# logging
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target

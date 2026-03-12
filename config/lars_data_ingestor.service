@@ -1,0 +1,17 @@
+[Unit]
+Description=LArs slow control data ingestor
+
+[Service]
+ExecStart=%h/local/bin/lars_data_ingestor.sh
+Restart=always
+RestartSec=10
+
+# give Python time to shut down
+TimeoutStopSec=30
+
+# logging
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target
