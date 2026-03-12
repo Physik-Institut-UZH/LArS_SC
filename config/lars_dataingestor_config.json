@@ -1,0 +1,11 @@
+{
+  "influxdb": {
+    "url": "http://localhost:8086",
+    "org": "lars",
+    "bucket": "test",
+    "token_file": "/home/lars/SlowControl/docker_config/influxdb_tokens/lars_admin.token"
+  },
+
+  "measurement": "lars",
+  "poll_interval": 1.0
+}
