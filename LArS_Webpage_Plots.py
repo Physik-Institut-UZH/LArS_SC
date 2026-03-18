@@ -114,6 +114,8 @@ if __name__ == '__main__':
             
             
             print('Building the webpage plots')
+
+
             ####################################
             # Pressure - Temperature plots 72h #
             ####################################
@@ -161,56 +163,9 @@ if __name__ == '__main__':
             plt.title('Pressure variation in 72 hours')
             
             plt.savefig( path.join(PLOTS_DIR,'pressure_72hrs.png'),format='png')
-            plt.close()
 
-            ####################################
-            # Pressure - Temperature plots 4h #
-            ####################################
-            fig, ax1 = plt.subplots()
+            plt.close(fig)
 
-            #Formatting graph
-            ax1.ticklabel_format(useOffset=False)
-            # rotate and align the tick labels so they look better
-            fig.autofmt_xdate()
-            xfmt = mdates.DateFormatter('%m-%d %H:%M')
-            ax1.xaxis.set_major_formatter(xfmt)
-
-            #Temperature plot
-            mask_tt0 = df_4h["TT0"].notna() #Gas temp
-            mask_tt1 = df_4h["TT1"].notna() #Liquid temp
-            ax1.set_ylabel('Temperature [K]', color='r')
-            ax1.plot(df_4h.loc[mask_tt0, '_time'],
-                     df_4h.loc[mask_tt0, 'TT0'],
-                     linewidth=4,
-                     color='r',
-                     label='TT0 in the gas phase'
-                     )
-            ax1.plot(df_4h.loc[mask_tt1, '_time'],
-                     df_4h.loc[mask_tt1, 'TT1'],
-                     linewidth=4,
-                     color='g',
-                     label='TT1 in liquid phase'
-                     )
-            ax1.tick_params(axis='y', labelcolor='r')
-
-            #Pressure plot
-            ax2 = ax1.twinx() # instantiate a second axes that shares the same x-axis
-            ax2.set_ylabel('Pressure[mBar]', color='orange')  # we already handled the x-label with ax1
-            mask_pt0 = df_4h["PT0"].notna()
-            ax2.plot(df_4h.loc[mask_pt0, '_time'],
-                     df_4h.loc[mask_pt0, 'PT0'],
-                     color='orange',
-                     linewidth=4,
-                     label='PT0'
-                     )
-            #Plot and save
-            fig.tight_layout()  # otherwise the right y-label is slightly clipped
-            ax1.legend(loc='best')
-            ax2.legend(loc='best')
-            plt.title('Pressure variation in 4 hours')
-            
-            plt.savefig( path.join(PLOTS_DIR,'pressure_4hrs.png'),format='png')
-            plt.close()
 
             ##########################
             # Temperatures plots 4hr #
@@ -246,6 +201,7 @@ if __name__ == '__main__':
             ax.set_ylabel('Temperature [K]')
             plt.title('Temperature variation in 4 hours')
             plt.savefig(path.join(PLOTS_DIR,'today_Temperature.png'),format='png')
+
             plt.close(fig)
 
             
@@ -307,6 +263,8 @@ if __name__ == '__main__':
             ax.set_ylabel('Temperature [K]')
             plt.title('Temperature variation in 72 hours')
             plt.savefig(path.join(PLOTS_DIR,'72h_Temperature.png'),format='png')
+
+            plt.close(fig)
 
 
             ###############################
@@ -375,7 +333,8 @@ if __name__ == '__main__':
             ax2.legend(loc='upper right')
             plt.title('Level variation in 4 hours')
             plt.savefig(path.join(PLOTS_DIR,'LevelMeterShort.png'),format='png')
-            plt.close()
+            
+            plt.close(fig)
 
 
             #####################################
@@ -418,7 +377,8 @@ if __name__ == '__main__':
             ax2.legend(loc='upper right')
             plt.title('Level variation in 8 hours')
             plt.savefig(path.join(PLOTS_DIR,'LevelMeter_8h.png'),format='png')
-            plt.close()
+            
+            plt.close(fig)
 
 
             ######################################
@@ -461,7 +421,8 @@ if __name__ == '__main__':
             ax2.legend(loc='upper right')
             plt.title('Level variation in 72 hours')
             plt.savefig(path.join(PLOTS_DIR,'LevelMeterLong.png'),format='png')
-            plt.close()
+            
+            plt.close(fig)
 
             print('All plots built and saved successfully.')
 
